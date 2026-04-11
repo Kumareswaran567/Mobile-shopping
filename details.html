@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Details - MobileHub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background: #f5f5f5; }
+        
+        .navbar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .product-info h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .brand { color: #667eea; font-size: 1.3rem; margin-bottom: 20px; }
+        .price {
+            font-size: 2.5rem;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .features {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        
+        .features h3 { color: #333; margin-bottom: 15px; font-size: 1.3rem; }
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .buy-now-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            border: none;
+            padding: 20px;
+            font-size: 1.3rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .buy-now-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; gap: 20px; }
+            .product-image { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">📱 MobileHub</div>
+            <a href="mobiles.html" class="back-btn">← Back to Mobiles</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <img id="productImg" class="product-image" src="" alt="">
+        
+        <div class="product-info">
+            <div class="brand" id="productBrand"></div>
+            <h1 id="productModel"></h1>
+            <div class="price" id="productPrice"></div>
+            
+            <div class="features">
+                <h3>📋 Key Specifications</h3>
+                <div class="feature-item">
+                    <span>RAM:</span>
+                    <span id="ram"></span>
+                </div>
+                <div class="feature-item">
+                    <span>Storage:</span>
+                    <span id="storage"></span>
+                </div>
+                <div class="feature-item">
+                    <span>Camera:</span>
+                    <span id="camera"></span>
+                </div>
+                <div class="feature-item">
+                    <span>Battery:</span>
+                    <span id="battery"></span>
+                </div>
+            </div>
+            
+            <button class="buy-now-btn" onclick="goToCheckout()">Buy Now</button>
+        </div>
+    </div>
+
+    <script>
+        const mobile = JSON.parse(sessionStorage.getItem('selectedMobile'));
+        if (mobile) {
+            document.getElementById('productImg').src = mobile.img;
+            document.getElementById('productBrand').textContent = mobile.brand;
+            document.getElementById('productModel').textContent = mobile.model;
+            document.getElementById('productPrice').textContent = `₹${mobile.price.toLocaleString()}`;
+            document.getElementById('ram').textContent = mobile.ram;
+            document.getElementById('storage').textContent = mobile.storage;
+            document.getElementById('camera').textContent = mobile.camera;
+            document.getElementById('battery').textContent = mobile.battery;
+        }
+
+        function goToCheckout() {
+            sessionStorage.setItem('selectedMobile', JSON.stringify(mobile));
+            window.location.href = 'check.html';
+        }
+    </script>   
+    <link rel="script" href="#script.js">
+</body>
+</html>

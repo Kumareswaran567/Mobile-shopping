@@ -1,0 +1,16 @@
+# Ignore all node_modules everywhere
+node_modules/
+
+# Backend specific (optional but safe)
+backend/node_modules/
+
+# Env files
+.env
+backend/.env
+
+# Logs
+npm-debug.log*
+
+# Build folders
+dist/
+build/  

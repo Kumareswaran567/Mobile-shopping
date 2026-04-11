@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Mobiles - MobileHub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover { background: rgba(255,255,255,0.3); }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+            font-size: 2.5rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        .brand { font-size: 1.1rem; color: #667eea; font-weight: bold; }
+        .model { font-size: 1.3rem; margin: 5px 0; color: #333; }
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+        
+        .details-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .details-btn:hover { transform: scale(1.02); }
+        
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">📱 MobileHub</div>
+            <a href="index.html" class="back-btn">← Back to Home</a>
+        </div>
+    </nav>  
+    
+    <div class="container">
+        <h1>All Latest Mobiles</h1>
+        <div class="grid" id="mobileGrid"></div>
+    </div>
+
+    <script>
+        const mobiles = [
+            {id:1, brand:'Samsung', model:'Galaxy S24 Ultra', price:'129999', img:'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHNhbXN1bmclMjBnYWxheHklMjBzMjQlMjB1bHRyYXxlbnwwfHwwfHx8MA%3D%3D', ram:'12GB', storage:'256GB', camera:'200MP', battery:'5000mAh'},
+            {id:2, brand:'iPhone', model:'15 Pro Max', price:'159999', img:'https://images.unsplash.com/photo-1616348436168-de43ad0db179?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aXBob25lfGVufDB8fDB8fHww', ram:'8GB', storage:'256GB', camera:'48MP', battery:'4441mAh'},
+            {id:3, brand:'OnePlus', model:'12', price:'64999', img:'https://i.pinimg.com/736x/74/0d/89/740d8953900ee06d66cc138ec2772748.jpg', ram:'12GB', storage:'256GB', camera:'50MP', battery:'5400mAh'},
+            {id:4, brand:'Google', model:'Pixel 8 Pro', price:'106999', img:'https://images.unsplash.com/photo-1706412703794-d944cd3625b3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z29vZ2xlJTIwcGl4ZWwlMjA4JTIwcHJvfGVufDB8fDB8fHww', ram:'12GB', storage:'128GB', camera:'50MP', battery:'5050mAh'},
+            {id:5, brand:'Xiaomi', model:'14 Pro', price:'99999', img:'https://i.pinimg.com/736x/5d/d7/2a/5dd72a5695c77afdd551c2b12067322a.jpg', ram:'12GB', storage:'256GB', camera:'50MP', battery:'4880mAh'},
+            {id:6, brand:'Samsung', model:'Galaxy Z Fold6', price:'189999', img:'https://i.pinimg.com/736x/6c/e0/61/6ce06174043a8a7c7b0ed4ae5622e7c0.jpg', ram:'12GB', storage:'512GB', camera:'200MP', battery:'4400mAh'},
+            {id:7, brand:'iPhone', model:'15 Pro', price:'119999', img:'https://i.pinimg.com/736x/a8/e8/80/a8e880e1f954c1411b1ab53ba76fcc12.jpg', ram:'8GB', storage:'128GB', camera:'48MP', battery:'3274mAh'},
+            {id:8, brand:'Vivo', model:'X100 Pro', price:'89999', img:'https://i.pinimg.com/736x/1f/69/d1/1f69d1b2717c5be010d9787e0b30b3c1.jpg', ram:'16GB', storage:'512GB', camera:'50MP', battery:'5400mAh'},
+            {id:9, brand:'Oppo', model:'Find X7 Ultra', price:'99999', img:'https://i.pinimg.com/736x/e1/20/8c/e1208cb36add77ca73853236f2f26a70.jpg', ram:'16GB', storage:'512GB', camera:'50MP', battery:'5000mAh'},
+            {id:10, brand:'Motorola', model:'Razr 50 Ultra', price:'99999', img:'https://i.pinimg.com/736x/29/e0/97/29e097fbbeec495e5c968b5014a0f498.jpg', ram:'12GB', storage:'512GB', camera:'50MP', battery:'4000mAh'},
+            {id:11, brand:'Nothing', model:'Phone 2', price:'54999', img:'https://i.pinimg.com/736x/bd/81/0b/bd810beeb7d2cc48f4165a0f151d704a.jpg', ram:'12GB', storage:'256GB', camera:'50MP', battery:'4700mAh'},
+            {id:12, brand:'Realme', model:'GT 6', price:'49999', img:'https://i.pinimg.com/736x/ef/cd/fa/efcdfac129a5e28587ad123bc853f6ab.jpg', ram:'16GB', storage:'512GB', camera:'50MP', battery:'5500mAh'},
+            {id:13, brand:'Samsung', model:'Galaxy A55', price:'36999', img:'https://i.pinimg.com/736x/3c/c7/f5/3cc7f50bc2c33f4f37c097dbc55477c8.jpg', ram:'8GB', storage:'128GB', camera:'50MP', battery:'5000mAh'},
+            {id:14, brand:'iPhone', model:'SE 2022', price:'49900', img:'https://i.pinimg.com/736x/9b/d1/d9/9bd1d9ed969d9862fb5dabd9d28f5584.jpg', ram:'4GB', storage:'64GB', camera:'12MP', battery:'2018mAh'},
+            {id:15, brand:'Poco', model:'F6 Pro', price:'34999', img:'https://i.pinimg.com/736x/92/f6/57/92f65776413115d487cd186ca48094cd.jpg', ram:'12GB', storage:'256GB', camera:'50MP', battery:'5000mAh'},
+            {id:16, brand:'Honor', model:'Magic 6 Pro', price:'89999', img:'https://i.pinimg.com/736x/49/44/18/494418288fa8694c43eac51d88138f1a.jpg', ram:'12GB', storage:'256GB', camera:'50MP', battery:'5600mAh'},
+            {id:17, brand:'Asus', model:'ROG Phone 8', price:'99999', img:'https://i.pinimg.com/736x/5b/1d/f7/5b1df7b344099607ccc8216a0e18d3aa.jpg', ram:'16GB', storage:'512GB', camera:'50MP', battery:'5500mAh'},
+            {id:18, brand:'Sony', model:'Xperia 1 VI', price:'139999', img:'https://i.pinimg.com/736x/d0/c6/d7/d0c6d75a28520f627fae7e5db3e96b63.jpg', ram:'12GB', storage:'256GB', camera:'48MP', battery:'5000mAh'},
+            {id:19, brand:'Nokia', model:'XR21', price:'44999', img:'https://i.pinimg.com/736x/9b/dd/e8/9bdde88fd52bd8430b11ba2e2fb07c25.jpg', ram:'6GB', storage:'128GB', camera:'64MP', battery:'4800mAh'},
+            {id:20, brand:'Infinix', model:'Zero Ultra', price:'32999', img:'https://i.pinimg.com/736x/4d/23/c5/4d23c5820b6b492dbc727e0c7dd255cb.jpg', ram:'8GB', storage:'256GB', camera:'200MP', battery:'5000mAh'}
+        ];
+
+        function createMobileCard(mobile) {
+            return `
+                <div class="card" onclick="viewDetails(${mobile.id})">
+                    <img src="${mobile.img}" alt="${mobile.brand} ${mobile.model}">
+                    <div class="card-content">
+                        <div class="brand">${mobile.brand}</div>
+                        <div class="model">${mobile.model}</div>
+                        <div class="price">₹${mobile.price.toLocaleString()}</div>
+                        <button class="details-btn">View Details</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('mobileGrid').innerHTML = mobiles.map(createMobileCard).join('');
+
+        function viewDetails(id) {
+            const mobile = mobiles.find(m => m.id === id);
+            sessionStorage.setItem('selectedMobile', JSON.stringify(mobile));
+            window.location.href = 'details.html';
+        }
+    </script>
+</body>
+
+</html>
