@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - MobileHub</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+
+        .navbar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .checkout-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        h1 { text-align: center; margin-bottom: 20px; }
+
+        .order-summary {
+            background: #eee;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-group { margin-bottom: 15px; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        input.error { border-color: red; }
+
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 15px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div>📱 MobileHub</div>
+        <a href="details.html" style="color:white;">← Back</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="checkout-container">
+
+        <h1>Checkout</h1>
+
+        <div class="order-summary">
+            <div class="summary-item">
+                <span id="orderProduct"></span>
+                <span id="orderPrice"></span>
+            </div>
+            <div class="summary-item">
+                <strong>Total:</strong>
+                <strong id="totalPrice"></strong>
+            </div>
+        </div>
+
+        <div class="error-message" id="apiError" style="display:none; margin-bottom:12px;"></div>
+
+        <form id="checkoutForm">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name">
+                <div class="error-message" id="nameError">Enter valid name</div>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email">
+                <div class="error-message" id="emailError">Enter valid email</div>
+            </div>
+
+            <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" id="cardNumber" maxlength="19">
+                <div class="error-message" id="cardError">Enter 16-digit card</div>
+            </div>
+
+            <!-- ✅ PIN FIELD -->
+            <div class="form-group">
+                <label>ATM PIN</label>
+                <input type="password" id="pin" maxlength="4">
+                <div class="error-message" id="pinError">Enter 4-digit PIN</div>
+            </div>
+
+            <button class="pay-btn" id="payBtn" type="submit">Pay Now</button>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const mobile = JSON.parse(sessionStorage.getItem('selectedMobile'));
+
+if (mobile) {
+    document.getElementById('orderProduct').textContent =
+        mobile.brand + " " + mobile.model;
+    document.getElementById('orderPrice').textContent =
+        "₹" + mobile.price;
+    document.getElementById('totalPrice').textContent =
+        "₹" + mobile.price;
+}
+
+function setApiError(msg) {
+    const el = document.getElementById('apiError');
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+
+function clearApiError() {
+    const el = document.getElementById('apiError');
+    el.textContent = '';
+    el.style.display = 'none';
+}
+
+// Format card number
+document.getElementById('cardNumber').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    e.target.value = value.match(/.{1,4}/g)?.join(' ') || '';
+});
+
+// Only numbers for PIN
+document.getElementById('pin').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/\D/g, '');
+});
+
+// Form validation
+document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    clearApiError();
+
+    let isValid = true;
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const card = document.getElementById('cardNumber').value.replace(/\s/g,'');
+    const pin = document.getElementById('pin').value;
+
+    // Name
+    if (name.length < 2) {
+        document.getElementById('nameError').style.display = 'block';
+        isValid = false;
+    } else document.getElementById('nameError').style.display = 'none';
+
+    // Email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('emailError').style.display = 'block';
+        isValid = false;
+    } else document.getElementById('emailError').style.display = 'none';
+
+    // Card
+    if (!/^\d{16}$/.test(card)) {
+        document.getElementById('cardError').style.display = 'block';
+        isValid = false;
+    } else document.getElementById('cardError').style.display = 'none';
+
+    // PIN
+    if (!/^\d{4}$/.test(pin)) {
+        document.getElementById('pinError').style.display = 'block';
+        isValid = false;
+    } else document.getElementById('pinError').style.display = 'none';
+
+    if (isValid) {
+        if (!mobile) {
+            setApiError('No selected mobile found. Please go back and select a mobile again.');
+            return;
+        }
+
+        const payBtn = document.getElementById('payBtn');
+        payBtn.disabled = true;
+        const originalText = payBtn.textContent;
+        payBtn.textContent = 'Processing...';
+
+        const orderData = {
+            mobile: {
+                id: mobile.id,
+                brand: mobile.brand,
+                model: mobile.model,
+                price: mobile.price
+            },
+            customer: { name, email },
+            cardNumber: card,
+            totalAmount: mobile.price,
+            timestamp: new Date().toISOString()
+        };
+
+        fetch(getApiUrl(API_CONFIG.ENDPOINTS.CHECKOUT), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        })
+        .then(async (res) => {
+            let data;
+            try {
+                data = await res.json();
+            } catch {
+                throw new Error('Server returned invalid response. Is the backend running?');
+            }
+            if (!res.ok) throw new Error(data.message || `Server error: ${res.status}`);
+            return data;
+        })
+        .then((data) => {
+            if (!data?.success || !data?.orderId) {
+                throw new Error(data?.message || 'Order not saved. Invalid response from server.');
+            }
+            sessionStorage.setItem('orderDetails', JSON.stringify({
+                ...orderData,
+                orderId: data.orderId,
+                orderDbId: data.id,
+                status: data.status || 'completed',
+                order: data.order || null
+            }));
+            window.location.href = 'success.html';
+        })
+        .catch((err) => {
+            setApiError(err.message || 'Failed to save order to database.');
+            payBtn.disabled = false;
+            payBtn.textContent = originalText;
+        });
+    }
+});
+</script>
+
+</body>
+</html>
